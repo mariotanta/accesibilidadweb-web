@@ -1,62 +1,5 @@
-<?
-function check_email_address($email) {
-	// Primero se comprueba que existe una @ y que las longitudes son correctas
-	if (!ereg("[^@]{1,64}@[^@]{1,255}", $email)) {
-		// Email inválido por un número incorrecto de carácteres o número incorrecto de @'s
-		return false;
-	}
-	// Partimos el email en porciones, a partir de la @ y el .
-	$email_array = explode("@", $email);
-	$local_array = explode(".", $email_array[0]);
-	for ($i = 0; $i < sizeof($local_array); $i++) {
-		if (!ereg("^(([A-Za-z0-9!#$%&'*+/=?^_`{|}~-][A-Za-z0-9!#$%&'*+/=?^_`{|}~\.-]{0,63})|(\"[^(\\|\")]{0,62}\"))$", $local_array[$i])) {
-			return false;
-		}
-	}
-	if (!ereg("^\[?[0-9\.]+\]?$", $email_array[1])) {
-		// Comprobamos si el dominio es una IP
-		$domain_array = explode(".", $email_array[1]);
-		if (sizeof($domain_array) < 2) {
-			return false; // Dominio con partes insuficientes
-		}
-		for ($i = 0; $i < sizeof($domain_array); $i++) {
-			if (!ereg("^(([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|([A-Za-z0-9]+))$", $domain_array[$i])) {
-				return false;
-			}
-		}
-	}
-return true;
-}
- if ($_POST) {
-		if(!($_POST["nombre"]) || !($_POST["mail"]) || (($_POST["mail"]) && !(check_email_address($_POST["mail"])))) {
-			$error=true;
-			if(!($_POST["nombre"])) $errorNombre = true;
-			if(($_POST["mail"])) {
-				  if (!(check_email_address($_POST["mail"]))) $mailIncorrecto=true;
-			}else $mailVacio=true;
+<? require_once 'commons.php'; ?>
 
-		}else{
-
-			$destinatario = "tanta@tantacom.com";
-			$subject = "Solicitud de contacto en www.accesibilidadweb.com";
-			$nombre = HTMLEntities($_POST["nombre"], ENT_COMPAT, "UTF-8");
-			$solucion = HTMLEntities($_POST["solucion"], ENT_COMPAT, "UTF-8");
-
-			$cuerpo = "Nombre: " . $nombre . "\n";
-			$cuerpo .= "Solución: " . $_POST["solucion"] . "\n";
-			$cuerpo .= "Correo electrónico: " . $_POST["mail"] . "\n";
-			$cuerpo .= "Empresa: " . $_POST["empresa"] . "\n";
-			$cuerpo .= "Telefono: " . $_POST["telefono"] . "\n";
-			$cuerpo .= "Sitio Web: " . $_POST["web"] . "\n";
-
-			$headers = "MIME-Version: 1.0\r\n";
-			$headers .= "Content-type: text/html; charset=UTF-8\r\n";
-			$headers .= "From: ".$nombre." <".$_POST['mail'].">\r\n";
-			$result = mail($destinatario,$subject,$cuerpo,$headers);
-			header("location: ./gracias.php?ok=true");
-	}
-}
-?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
 <head>
@@ -65,12 +8,10 @@ return true;
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
 	<!-- Metadatos para los buscadores -->
-<meta name="description" content="Estudiamos el nivel de Accesibilidad Web en el que se encuentra un sitio, realizamos el informe de grado de accesibilidad y recomendaciones sobre alternativas de adecuación y de su futuro mantenimiento. Consúltanos" />
-<meta name="keywords" content="auditoría accesibilidad, mantenimiento, accesibilidad web, directrices de accesibilidad, WAI, UNE 139803, Disposición Adicional 5º, LSSICE, eEurope 2002, AENOR, Ley de Impulso de la Sociedad de la Información, LISI" />
-<meta name="title" content="Auditoría en accesibilidad Web. Accesibilidad web.com" />
-<meta name="google-site-verification" content="CXFQiJ4JSVEaT_KYOvyN9b9PQ_KlMPeTblnRFodZuCg" />
-
-
+	<meta name="description" content="Estudiamos el nivel de Accesibilidad Web en el que se encuentra un sitio, realizamos el informe de grado de accesibilidad y recomendaciones sobre alternativas de adecuación y de su futuro mantenimiento. Consúltanos" />
+	<meta name="keywords" content="auditoría accesibilidad, mantenimiento, accesibilidad web, directrices de accesibilidad, WAI, UNE 139803, Disposición Adicional 5º, LSSICE, eEurope 2002, AENOR, Ley de Impulso de la Sociedad de la Información, LISI" />
+	<meta name="title" content="Auditoría en accesibilidad Web. Accesibilidad web.com" />
+	<meta name="google-site-verification" content="CXFQiJ4JSVEaT_KYOvyN9b9PQ_KlMPeTblnRFodZuCg" />
 	<!-- Metadatos de navegacion semantica -->
 	<link rel="start" href="index.php" title="Página inicial" />
 	<link rel="index" href="index.php" title="Página inicial" />
@@ -191,18 +132,22 @@ return true;
 
 <div id="contact">
 					<h2 class="title">¡Contacta con nosotros ahora!</h2>
-					<? if($error) { ?>
+					<? if(!empty ($error)) { ?>
 					<div class="msgError">
 						<ul class="errores">
-							<? if($errorNombre) { ?><li>(!) El campo 'Nombre' es obligatorio</li> <?php }?>
-						  <? if($mailIncorrecto) {?><li> (!) El formato del campo 'Correo electr&oacute;nico' no es correcto</li><?php }
+							<? if (!empty ($errorToken)){ ?>
+							<li>(!) No se ha podido realizar el envío. Inténtalo de nuevo</li>
+							<? } ?>
+							<? if(!empty ($errorNombre)) { ?><li>(!) El campo 'Nombre' es obligatorio</li> <?php }?>
+						  <? if(!empty ($mailIncorrecto)) {?><li> (!) El formato del campo 'Correo electr&oacute;nico' no es correcto</li><?php }
 							 else
-								if($mailVacio) {?><li>	(!) El campo 'Correo electr&oacute;nico' es obligatorio</li><?php }?>
+								if(!empty ($mailVacio)) {?><li>	(!) El campo 'Correo electr&oacute;nico' es obligatorio</li><?php }?>
 						</ul>
 					</div>
 
 					<?php }?>
 					<form action="" method="post" id="formContact" name="formContact">
+						<input type="hidden" name="token" value="<?php echo $newToken; ?>">
 						<p>Los campos marcados con asterisco (*) son obligatorios.</p>
 						<ul class="clearFix">
 							<li class="clr">

@@ -1,7 +1,7 @@
 <?php
 $referer = $_SERVER["HTTP_REFERER"];
 $ok = $_GET["ok"];
-if(ok != true || !isset($ok)){
+if($ok != true || !isset($ok)){
 	$url = split("/", $referer);
 	$num = count($url);
 	header("location: ".$url[3]);
