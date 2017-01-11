@@ -74,7 +74,7 @@ if ($_POST) {
 
 		}else{
 
-			$destinatario = "david.abad@tantacom.com";
+			$destinatario = "tanta@tantacom.com";
 			$subject = "Solicitud de contacto en www.accesibilidadweb.com";
 			$nombre = HTMLEntities($_POST["nombre"], ENT_COMPAT, "UTF-8");
 			$solucion = HTMLEntities($_POST["solucion"], ENT_COMPAT, "UTF-8");
